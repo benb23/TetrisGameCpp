@@ -9,7 +9,7 @@
 #define invalid_Key -1
 
 void TetrisGame::initGame(){
-//vvvvvvMMM
+	
 	displayBorder();
 	printMenu();
 
@@ -129,7 +129,7 @@ void TetrisGame::runGame(){
 					gotoxy(15, 20);
 					cout << "Goodbye! " << endl << endl;
 					Sleep(1000);
-					exit(0);
+					return;
 				}
 				if (validKey != invalid_Key){
 
@@ -219,13 +219,13 @@ void TetrisGame::runGame(){
 			gotoxy(15, 20);
 			cout << "Game over" << endl << endl;
 			Sleep(1000);
-			exit(0);
+			return;
 		}
 
 
 	}
 	gotoxy(2, 17);
 	keyEntered = _getch();
-	exit(0);
+	return;
 }
 
