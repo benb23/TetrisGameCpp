@@ -1,8 +1,8 @@
-//blaXXXXXXX
+
 #include "GoToXY.h"
 #include "TetrisBoard.h"
 
-
+//XXXXXXXXXXXXXXXXX
 void Shape::createShape(int whichShape) {
 	int k=1;
 	switch (whichShape) {
