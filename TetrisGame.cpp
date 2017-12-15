@@ -7,7 +7,7 @@
 #include <chrono>
 
 #define invalid_Key -1
-//ERAN YA ZAIN
+
 void TetrisGame::initGame(){
 	
 	displayBorder();
