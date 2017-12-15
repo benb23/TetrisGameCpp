@@ -2,7 +2,7 @@
 #include "GoToXY.h"
 #include "TetrisBoard.h"
 
-//XXXXXXXXXXXXXXXXX
+//XXXXXXXX
 void Shape::createShape(int whichShape) {
 	int k=1;
 	switch (whichShape) {
