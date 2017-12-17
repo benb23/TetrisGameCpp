@@ -56,7 +56,7 @@ void Shape::createShape(int whichShape) {
 
 void Shape::move(int direction, TetrisBoard& board) {
 	int position = getPoisition();
-	int x,y;
+	int x, y, check = 1;
 
 	for (int j = 0; j < SIZE; j++){
 		// if the shape is the Joker AND there is another shape there
@@ -85,7 +85,7 @@ void Shape::move(int direction, TetrisBoard& board) {
 			if (position == DEG_0 || position == DEG_180) //faces down
 			{
 				for (int j = 0; j < SIZE; j++){
-					if (shape[j].getY() >= 16 || board.checkBoard(shape[j].getX(), shape[j].getY() + 1)
+					if (shape[j].getY() == 16 || board.checkBoard(shape[j].getX(), shape[j].getY() + 1)
 						|| board.checkBoard(shape[j].getX(), shape[j].getY() + 2))
 					{
 						for (int i = 0; i < SIZE; i++){
@@ -126,7 +126,14 @@ void Shape::move(int direction, TetrisBoard& board) {
 				}
 			}
 		}
-		rotate(position);
+		for (int i = 0; i < SIZE; i++) //checks if the current shape has reached the bottom of the screen or near another shape
+		{
+			if (shape[i].getY() >= Board_Gap + ROWS - 1 || board.checkBoard(shape[i].getX(),shape[i].getY() + 1))
+				check = 0;
+		}
+		if(check)
+			rotate(position);
+
 	}
 	setTextColor(whichColor());
 	for (int j = 0; j < SIZE; j++)
@@ -163,12 +170,12 @@ void Shape::rotate(int position) {
 
 			
 		case LINE:
-			k = -2;
+			k = -1;
 			for (int i = 0; i < SIZE; i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
-				shape[i].setX(x + k);
-				shape[i].setY(y - k);
+				shape[i].setX(x - k);
+				shape[i].setY(y - k + 1);
 				k++;
 			}
 			setPosition(DEG_180);
@@ -180,14 +187,12 @@ void Shape::rotate(int position) {
 		switch (getShape())
 		{
 		case LINE:
-			k = -2;
+			k = -1;
 			for (int i = 0; i < SIZE;i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
-				if (i != 2)
-					shape[i].draw(' ');
-				shape[i].setX(x - k - 1);
-				shape[i].setY(y + k);
+				shape[i].setX(x + k - 1);
+				shape[i].setY(y - k);
 				k++;
 			}
 			setPosition(DEG_270);
@@ -203,11 +208,8 @@ void Shape::rotate(int position) {
 			for (int i = 0; i < SIZE;i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
-				if (i != 1)
-					shape[i].draw(' ');
-				shape[i].setX(x+k);
-				shape[i].setY(y-k);
-
+				shape[i].setX(x + k);
+				shape[i].setY(y+ k - 1);
 				k++;
 			}
 			setPosition(DEG_0);
