@@ -179,9 +179,11 @@ void TetrisGame::runGame(){
 						currentShape.move(validKey, board);
 
 					}
-					else if (currentShape.getShape() == Shape::BOMB && currentShape.shape[0].getX() >  1 && currentShape.shape[0].getX() < 10){ // the bomb has exploded						currentShape.checkBomb(validKey, board, howManyBombed);
-						isBombed = 0;
-						break;
+					else if (currentShape.getShape() == Shape::BOMB && (keyEntered==LEFT_KEY || keyEntered == RIGHT_KEY) && currentShape.shape[0].getX() >  1 && currentShape.shape[0].getX() < 10){ // the bomb has exploded						currentShape.checkBomb(validKey, board, howManyBombed);
+						if (currentShape.checkBomb(validKey, board, howManyBombed)) {
+							isBombed = 0;
+							break;
+						}
 					}
 
      
@@ -189,7 +191,7 @@ void TetrisGame::runGame(){
 			}
 		}
 		checkPosition = board.checkPos(currentShape, Shape::DOWN);
-		if ((checkPosition == TetrisBoard::FREE_SPACE || (currentShape.getShape() == Shape::BOMB && currentShape.checkBomb(Shape::DOWN, board, howManyBombed) && currentShape.shape[0].getY()>18) ||
+		if ((checkPosition == TetrisBoard::FREE_SPACE || (currentShape.getShape() == Shape::BOMB && !(currentShape.checkBomb(Shape::DOWN, board, howManyBombed)) && currentShape.shape[0].getY()>18) ||
 			(currentShape.getShape() == Shape::JOKER && checkPosition == TetrisBoard::SHAPE_ENCOUNTER)) && isBombed)
 			currentShape.move(Shape::DOWN, board);
 		else{ // the last object stopped and a new one needs to be created

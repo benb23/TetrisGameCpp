@@ -249,12 +249,12 @@ bool Shape::checkBomb(int direction, TetrisBoard& board, int& howManyBombed){
 		(board.checkBoard(x, y + 1) == true))
 	{
 		howManyBombed = activateBomb(x, y, board);
-		return false;
+		return true;
 	}
 
 
 	gotoxy(x, y);
-	return true;
+	return false;
 
 
 }
@@ -266,7 +266,7 @@ int Shape::activateBomb(int x, int y, TetrisBoard& board){
 		tempX = x - 1;
 		for (int j = 0; j < 3; j++){
 
-			if (tempX > 0 && tempX <= 10 && tempY > 3 && tempY < 18){
+			if (tempX > 0 && tempX <= COLUMNS && tempY > Board_Gap && tempY < ROWS+Board_Gap){
 				if (board.getCoord(tempX, tempY))
 					howManyBombed++;
 				gotoxy(tempX, tempY);
