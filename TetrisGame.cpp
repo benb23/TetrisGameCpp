@@ -148,21 +148,22 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 
 					if (keyEntered == THREE) //accelerate speed
 					{
-						scoreStatus.increaseSpeed();
-						scoreStatus.printSpeed();
-						currentTime -= 800;
-						tempTime -= 200;
-						timeInterval += tempTime;
-
+						if (scoreStatus.getSpeed() < Score::VERY_HIGH) {
+							tempTime -= 300;
+							timeInterval = 800 + tempTime;
+							scoreStatus.increaseSpeed();
+							scoreStatus.printSpeed();
+						}
 						break;
 					}
 					else if (keyEntered == FOUR) // decrease speed
 					{
-						scoreStatus.decreaseSpeed();
-						scoreStatus.printSpeed();
-						currentTime -= 800;
-						tempTime += 200;
-						timeInterval += tempTime;
+						if (scoreStatus.getSpeed() > Score::VERY_SLOW) {
+							tempTime += 300;
+							timeInterval = 800 + tempTime ;
+							scoreStatus.decreaseSpeed();
+							scoreStatus.printSpeed();
+						}
 						break;
 
 					} 
