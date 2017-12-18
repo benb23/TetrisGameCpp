@@ -76,6 +76,8 @@ public:
 				return LIGHTRED;
 		}
 	}
+
+	bool canTheShapeRotate(TetrisBoard& board);
 };
 
 #endif _Shape_H
