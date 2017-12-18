@@ -41,10 +41,15 @@ void TetrisGame::initGame(){
 				ShellExecute(0, 0, L"http://www.tetrisfriends.com/help/tips_beginner.php", 0, 0, SW_SHOW);
 				break;
 			case '9':
-				setTextColor(WHITE);
-				gotoxy(15, 20);
-				cout << "Goodbye! " << endl << endl;
-				Sleep(2000);
+				setTextColor(LIGHTGREEN);
+				gotoxy(0, 20);
+				cout << "     _____                         ____                 " << endl;
+				cout << "    / ____|                       / __ \\                " << endl;
+				cout << "   | |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ " << endl;
+				cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
+				cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
+				cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
+				Sleep(5000);
 				return;
 			}
 		}
@@ -148,21 +153,22 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 
 					if (keyEntered == THREE) //accelerate speed
 					{
-						scoreStatus.increaseSpeed();
-						scoreStatus.printSpeed();
-						currentTime -= 800;
-						tempTime -= 200;
-						timeInterval += tempTime;
-
+						if (scoreStatus.getSpeed() < Score::VERY_HIGH) {
+							tempTime -= 300;
+							timeInterval = 800 + tempTime;
+							scoreStatus.increaseSpeed();
+							scoreStatus.printSpeed();
+						}
 						break;
 					}
 					else if (keyEntered == FOUR) // decrease speed
 					{
-						scoreStatus.decreaseSpeed();
-						scoreStatus.printSpeed();
-						currentTime -= 800;
-						tempTime += 200;
-						timeInterval += tempTime;
+						if (scoreStatus.getSpeed() > Score::VERY_SLOW) {
+							tempTime += 300;
+							timeInterval = 800 + tempTime ;
+							scoreStatus.decreaseSpeed();
+							scoreStatus.printSpeed();
+						}
 						break;
 
 					} 
@@ -231,9 +237,14 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 
 		if (board.checkEndGame()){
 			setTextColor(WHITE);
-			gotoxy(15, 20);
-			cout << "Game over" << endl << endl;
-			Sleep(1000);
+			gotoxy(0, 20);
+			cout << "     _____                         ____                 " << endl;
+			cout << "    / ____|                       / __ \\                " << endl;
+			cout << "   | |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ " << endl;
+			cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
+			cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
+			cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
+			Sleep(5000);
 			return;
 		}
 

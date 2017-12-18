@@ -30,13 +30,13 @@
     <ClInclude Include="Shape.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TetrisGame.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TetrisBoard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScoreBar.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TetrisGame.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
