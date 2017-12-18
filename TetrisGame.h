@@ -46,10 +46,15 @@ public:
 
 	bool checkExit(char keyEntered) {
 		if (keyEntered == '9') {
-			setTextColor(WHITE);
-			gotoxy(15, 20);
-			cout << "Goodbye! " << endl << endl;
-			Sleep(2000);
+			setTextColor(LIGHTCYAN);
+			gotoxy(0, 20);
+			cout << "     _____                         ____                 " << endl;
+			cout << "    / ____|                       / __ \\                " << endl;
+			cout << "   | |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ " << endl;
+			cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
+			cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
+			cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
+			Sleep(5000);
 			return true;
 		}
 		return false;

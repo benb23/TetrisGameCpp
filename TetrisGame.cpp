@@ -41,7 +41,7 @@ void TetrisGame::initGame(){
 				ShellExecute(0, 0, L"http://www.tetrisfriends.com/help/tips_beginner.php", 0, 0, SW_SHOW);
 				break;
 			case '9':
-				setTextColor(LIGHTGREEN);
+				setTextColor(LIGHTCYAN);
 				gotoxy(0, 20);
 				cout << "     _____                         ____                 " << endl;
 				cout << "    / ____|                       / __ \\                " << endl;
@@ -236,7 +236,7 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 		}
 
 		if (board.checkEndGame()){
-			setTextColor(WHITE);
+			setTextColor(LIGHTCYAN);
 			gotoxy(0, 20);
 			cout << "     _____                         ____                 " << endl;
 			cout << "    / ____|                       / __ \\                " << endl;
