@@ -9,19 +9,45 @@
 #define invalid_Key -1
 
 void TetrisGame::initGame(){
-	
-	displayBorder();
+
+	TetrisBoard board;
+	Score scoreStatus;
+	setKeys();
+	board.setBoard();
 	printMenu();
+	displayBorder();
+	scoreStatus.printScore();
+	scoreStatus.printSpeed();
+	currentShape.createShape(rand() % 2 + 10);
+
+
 
 	while (true) 
 	{
-		if (_getch() == '1') // the game starts only when the key 1 has been pressed	
-		{
-			runGame();
-			break;
+		char keyPressed;
+
+		while (_kbhit) {
+			keyPressed = _getch();
+
+			switch (keyPressed) {
+			case '1':
+				runGame(board,scoreStatus);
+				break;
+
+			case '2':
+				runGame(board, scoreStatus);
+				break;
+			case '8':
+				ShellExecute(0, 0, L"http://www.tetrisfriends.com/help/tips_beginner.php", 0, 0, SW_SHOW);
+				break;
+			case '9':
+				setTextColor(WHITE);
+				gotoxy(15, 20);
+				cout << "Goodbye! " << endl << endl;
+				Sleep(2000);
+				return;
+			}
 		}
-		else if (_getch() == '9') // exit the game in the beggining
-			break;
 	}
 
 	
@@ -102,19 +128,11 @@ int TetrisGame::checkKeys(char ch){
 	return invalid_Key;
 }
 
-void TetrisGame::runGame(){
-	int maxY, minY, isBombed = 1, tempTime=0;
-	TetrisBoard board;
-	Score scoreStatus;
-	unsigned long int validKey, currentTime, whichShape = rand() % 2 + 10; // update 
+void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
+	int maxY, minY, isBombed = 1, tempTime = 0;
 	char keyEntered = '5';
-	int checkPosition, timeInterval = 800, howManyBombed=0;
-
-	setKeys();
-	scoreStatus.printScore();
-	scoreStatus.printSpeed();
-	board.setBoard();
-	currentShape.createShape(whichShape);
+	unsigned long int validKey, currentTime, whichShape=currentShape.getShape(); // update 
+	int checkPosition, timeInterval = 800, howManyBombed = 0;
 
 	while (keyEntered != ESC)
 	{
@@ -124,13 +142,8 @@ void TetrisGame::runGame(){
 			if (_kbhit()){
 				keyEntered = _getch();
 				validKey = checkKeys(keyEntered);
-				if (keyEntered == '9'){
-					setTextColor(WHITE);
-					gotoxy(15, 20);
-					cout << "Goodbye! " << endl << endl;
-					Sleep(1000);
+				if (checkExit(keyEntered) || checkPause(keyEntered))
 					return;
-				}
 				if (validKey != invalid_Key){
 
 					if (keyEntered == THREE) //accelerate speed

@@ -1,6 +1,6 @@
 #ifndef _Tetris_Game
 #define _Tetris_Game
-#include "Shape.h"
+#include "ScoreBar.h"
 #include <iostream>
 using namespace std;
 
@@ -16,7 +16,7 @@ class TetrisGame
 	int Board[COLUMN][ROW];
 public:
 	void displayBorder();
-	void runGame();
+	void runGame(TetrisBoard& board, Score& scoreStatus);
 	void initGame();
 	int checkKeys(char ch);
 	void setKeys(){
@@ -43,6 +43,25 @@ public:
 	}
 
 	void printMenu();
+
+	bool checkExit(char keyEntered) {
+		if (keyEntered == '9') {
+			setTextColor(WHITE);
+			gotoxy(15, 20);
+			cout << "Goodbye! " << endl << endl;
+			Sleep(2000);
+			return true;
+		}
+		return false;
+	}
+
+	bool checkPause(char keyEntered) {
+		if (keyEntered == '2') {
+			Sleep(1000);
+			return true;
+		}
+		return false;
+	}
 };
 
 #endif
