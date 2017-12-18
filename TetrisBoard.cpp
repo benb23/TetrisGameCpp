@@ -53,7 +53,7 @@ bool TetrisBoard::checkLine(int currentY){
 int TetrisBoard::deleteLines(Shape current, int minY, int maxY){
 
 
-	int currentY = minY, howManyDel = 0, temp;
+	int currentY = minY, howManyDel = 0, temp, tempY, val;
 
 	while (currentY - maxY >= 0){
 
@@ -61,20 +61,35 @@ int TetrisBoard::deleteLines(Shape current, int minY, int maxY){
 		if (checkLine(currentY)) // need to delete the relatively lowest line for the shape
 		{ 
 			gotoxy(1, currentY);
-			for (int i = 1; i <= COLUMNS; i++){
-				setCoord(i, currentY, 0);
+			for (int i = 1; i <= COLUMNS; i++) // printing the deletion of the line
+			{
+				setCoord(i, currentY, 0); //updating the deleted row to be ''empty''
 				cout << " ";
 			}
 
 			for (int y = currentY; y > Board_Gap; y--) // updating the board
 			{
 				for (int x = 1; x <= COLUMNS; x++){
-					temp = getCoord(x, y-1);
-					setCoord(x, y, temp);
+					val = getCoord(x, y-1);
+					tempY = y;
+					if (val && current.getShape()!=Shape::JOKER) // if there's a shape above the deleted line 
+					{
+						while (tempY <= ROWS + Board_Gap - 1 ) {
+							temp = getCoord(x, tempY);
+							if (temp)
+								break;
+							setCoord(x, tempY, val);
+							if(tempY-1 != y-1) // the shape needs to go down more than 1 row
+								setCoord(x, tempY-1, 0);
+							tempY++;
+						}
+						tempY--;
+					}
+					setCoord(x, tempY, val);
 				}
 			}
 			Sleep(250);
-			printBoard(currentY);
+			printBoard(ROWS+Board_Gap-1);
 			howManyDel++;
 			maxY++;
 
