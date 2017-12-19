@@ -123,7 +123,7 @@ public:
 	Score(){
 		scoreValue = 0;
 		linesDeleted = 0;
-		partsNum = 0;
+		partsNum = 1;
 		speedCounter = 0;
 		for (int i = 0; i < COLUMNS; i++)
 			maxValueY[i] = ROWS + Board_Gap;

@@ -121,12 +121,12 @@ void Shape::move(int direction, TetrisBoard& board) {
 				else // checking right/left 
 				{
 					for (int j = 0; j < SIZE; j++) {
-						if (shape[j].getX() <= 1 || board.checkBoard(shape[j].getX() - 1, shape[j].getY())
+						if (shape[j].getX() <= 2 || board.checkBoard(shape[j].getX() - 1, shape[j].getY())
 							|| board.checkBoard(shape[j].getX() - 2, shape[j].getY()))
 						{
 							for (int i = 0; i < SIZE; i++) {
 								x = shape[i].getX();
-								if (position == DEG_90)
+								if (position == DEG_90 && x<2)
 									shape[i].setX(x + 2);
 								else
 									shape[i].setX(x + 1);
@@ -187,7 +187,6 @@ void Shape::rotate(int position) {
 		switch (getShape())
 		{
 
-			
 		case LINE:
 			k = -1;
 			for (int i = 0; i < SIZE; i++) {
@@ -269,6 +268,15 @@ int Shape::activateBomb(int x, int y, TetrisBoard& board){
 			if (tempX > 0 && tempX <= COLUMNS && tempY > Board_Gap && tempY < ROWS+Board_Gap){
 				if (board.getCoord(tempX, tempY))
 					howManyBombed++;
+				if (j%2==0)
+					setTextColor(YELLOW);
+				else
+					setTextColor(RED);
+
+				gotoxy(tempX, tempY);
+				cout << "*";
+				Sleep(50);
+				
 				gotoxy(tempX, tempY);
 				cout << " ";
 				board.setCoord(tempX, tempY,0);

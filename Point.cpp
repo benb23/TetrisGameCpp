@@ -1,16 +1,17 @@
 #include "Point.h"
 #include "GoToXY.h"
+
+
 void Point::draw(char ch) {
 	gotoxy(x, y);
+	if (ch == ' ')
+		setTextColor(BLACK);
 	cout << ch;
 	hideCursor();
 }
 
-void Point::move() {
-	move(0);
-}
 
-void Point::move(int dir) {
+void Point::move(int dir = DOWN) {
 	switch (dir) {
 	case DOWN: 
 		++y;
