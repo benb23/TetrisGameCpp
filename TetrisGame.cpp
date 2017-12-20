@@ -8,6 +8,62 @@
 
 #define invalid_Key -1
 
+void TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreStatus) {
+
+	switch (keyPressed) {
+	
+	case '1':
+		setGameStarted();
+		runGame(board, scoreStatus);
+		break;
+
+	case '2':
+		if (gameStarted) {
+			setGameStarted(); //prints the normal continue color
+			runGame(board, scoreStatus);
+		}
+		break;
+	case '8':
+		ShellExecute(0, 0, L"http://www.tetrisfriends.com/help/tips_beginner.php", 0, 0, SW_SHOW);
+		break;
+	case '9':
+		printGameOver();
+		return;
+	}
+}
+
+void TetrisGame::continueBlink() {
+	setTextColor(DARKGREY);
+	gotoxy(16, 8);
+	cout << "(2)";
+	gotoxy(28, 8);
+	cout << "CONTINUE";
+	Sleep(200);
+
+	setTextColor(WHITE);
+	gotoxy(16, 8);
+	cout << "(2)";
+	gotoxy(28, 8);
+	cout << "CONTINUE";
+	Sleep(200);
+}
+
+void TetrisGame::setGameStarted() {
+
+	setTextColor(DARKGREY);
+	gotoxy(16, 6);
+	cout << "(1) START GAME";
+	if (gameStarted) {
+		setTextColor(LIGHTGREY);
+		gotoxy(16, 8);
+		cout << "(2)";
+		gotoxy(28, 8);
+		cout << "CONTINUE";
+		return;
+	}
+	gameStarted = 1;
+}
+
 void TetrisGame::initGame(){
 
 	TetrisBoard board;
@@ -18,40 +74,20 @@ void TetrisGame::initGame(){
 	displayBorder();
 	scoreStatus.printScore();
 	scoreStatus.printSpeed();
+	scoreStatus.printParts();
 	currentShape.createShape(rand() % 2 + 10);
 
-
-
-	while (true) 
+	while (true) // the game runs as long as the user doesn't press 9 or the game ends
 	{
 		char keyPressed;
+		
+		if (gameStarted)
+			continueBlink();
 
-		while (_kbhit) {
+		while (_kbhit())
+		{
 			keyPressed = _getch();
-
-			switch (keyPressed) {
-			case '1':
-				runGame(board,scoreStatus);
-				break;
-
-			case '2':
-				runGame(board, scoreStatus);
-				break;
-			case '8':
-				ShellExecute(0, 0, L"http://www.tetrisfriends.com/help/tips_beginner.php", 0, 0, SW_SHOW);
-				break;
-			case '9':
-				setTextColor(LIGHTCYAN);
-				gotoxy(0, 20);
-				cout << "     _____                         ____                 " << endl;
-				cout << "    / ____|                       / __ \\                " << endl;
-				cout << "   | |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ " << endl;
-				cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
-				cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
-				cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
-				Sleep(5000);
-				return;
-			}
+			MenuControl(keyPressed, board, scoreStatus);
 		}
 	}
 
@@ -134,12 +170,12 @@ int TetrisGame::checkKeys(char ch){
 }
 
 void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
-	int maxY, minY, isBombed = 1, tempTime = 0;
+	int maxY, minY, isBombed = 1, tempTime = 0, speed;
 	char keyEntered = '5';
 	unsigned long int validKey, currentTime, whichShape=currentShape.getShape(); // update 
 	int checkPosition, timeInterval = 800, howManyBombed = 0;
 
-	while (keyEntered != ESC)
+	while (true)
 	{
 
 		currentTime = GetTickCount64() + timeInterval;
@@ -150,28 +186,11 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 				if (checkExit(keyEntered) || checkPause(keyEntered))
 					return;
 				if (validKey != invalid_Key){
-
-					if (keyEntered == THREE) //accelerate speed
-					{
-						if (scoreStatus.getSpeed() < Score::VERY_HIGH) {
-							tempTime -= 300;
-							timeInterval = 800 + tempTime;
-							scoreStatus.increaseSpeed();
-							scoreStatus.printSpeed();
-						}
+					speed = scoreStatus.getSpeed();
+					if ((keyEntered == THREE && speed < Score::VERY_HIGH) || (keyEntered == FOUR && speed > Score::VERY_SLOW)) {
+						changeSpeed(keyEntered, tempTime, timeInterval, scoreStatus);
 						break;
 					}
-					else if (keyEntered == FOUR) // decrease speed
-					{
-						if (scoreStatus.getSpeed() > Score::VERY_SLOW) {
-							tempTime += 300;
-							timeInterval = 800 + tempTime ;
-							scoreStatus.decreaseSpeed();
-							scoreStatus.printSpeed();
-						}
-						break;
-
-					} 
 
 					if (board.checkPos(currentShape, validKey) == TetrisBoard::FREE_SPACE){ // returns true also if it's a joker
 						if (keyEntered == SPACE_key) // space key has been pressed
@@ -214,37 +233,11 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 			(currentShape.getShape() == Shape::JOKER && checkPosition == TetrisBoard::SHAPE_ENCOUNTER)) && isBombed)
 			currentShape.move(Shape::DOWN, board);
 		else{ // the last object stopped and a new one needs to be created
-			isBombed = 1;
-			timeInterval = 800 + tempTime;
-			if (currentShape.getShape() != Shape::BOMB)
-				board.updateBoard(currentShape);
-			currentShape.getMinMaxShape(minY, maxY);
-
-			scoreStatus.setLinesDeleted(board.deleteLines(currentShape, minY, maxY));
-			scoreStatus.updateScoreValue(scoreStatus.getLinesDeleted());
-			scoreStatus.updateScoreValue(-50 * howManyBombed);
-			howManyBombed = 0;
-			scoreStatus.printParts();
-			scoreStatus.printScore();
-			whichShape = randomNum();
-
-			
-
-			currentShape.deleteShape();
-			currentShape.createShape(whichShape); // creates a new shape
-			currentShape.move(Shape::DOWN,board);
+			newRound(isBombed, tempTime, timeInterval, board, minY, maxY, scoreStatus, howManyBombed, whichShape);
 		}
 
 		if (board.checkEndGame()){
-			setTextColor(LIGHTCYAN);
-			gotoxy(0, 20);
-			cout << "     _____                         ____                 " << endl;
-			cout << "    / ____|                       / __ \\                " << endl;
-			cout << "   | |  __  __ _ _ __ ___   ___  | |  | |_   _____ _ __ " << endl;
-			cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
-			cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
-			cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
-			Sleep(5000);
+			printGameOver();
 			return;
 		}
 
@@ -255,3 +248,24 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
 	return;
 }
 
+void TetrisGame::newRound(int& isBombed,int& tempTime, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape) {
+	isBombed = 1;
+	timeInterval = 800 + tempTime;
+	if (currentShape.getShape() != Shape::BOMB)
+		board.updateBoard(currentShape);
+	currentShape.getMinMaxShape(minY, maxY);
+
+	scoreStatus.setLinesDeleted(board.deleteLines(currentShape, minY, maxY));
+	scoreStatus.updateScoreValue(scoreStatus.getLinesDeleted());
+	scoreStatus.updateScoreValue(-50 * howManyBombed);
+	howManyBombed = 0;
+	scoreStatus.printParts();
+	scoreStatus.printScore();
+	whichShape = randomNum();
+
+
+
+	currentShape.deleteShape();
+	currentShape.createShape(whichShape); // creates a new shape
+	currentShape.move(Shape::DOWN, board);
+}

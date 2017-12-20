@@ -245,7 +245,7 @@ bool Shape::checkBomb(int direction, TetrisBoard& board, int& howManyBombed){
 
 	if ((direction == LEFT && board.checkBoard(x - 1, y) == true) ||
 		(direction == RIGHT && board.checkBoard(x + 1, y) == true) ||
-		(board.checkBoard(x, y + 1) == true))
+		(board.checkBoard(x, y + 1) == true) || y>=Board_Gap+ROWS-1)
 	{
 		howManyBombed = activateBomb(x, y, board);
 		return true;
