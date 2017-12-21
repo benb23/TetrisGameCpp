@@ -14,7 +14,6 @@
 
 enum { ROWS = 15, COLUMNS = 10, Board_Gap = 3 };
 
-
 using namespace std;
 
 #endif _config_H

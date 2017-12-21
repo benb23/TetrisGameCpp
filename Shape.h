@@ -4,13 +4,13 @@
 #include "Point.h"
 #include "Config.h"
 #include "GoToXY.h"
-class TetrisBoard;
+class TetrisBoard;		// Foward decleration for TetrisBoard	
 
 class Shape{
 private:
-	int currentShape;
-	int position;
-	char texture;
+	int currentShape;	// Current shape type
+	int position;		// Current
+	char texture;		// Shape texture to print 
 public:
 	Point* shape;
 

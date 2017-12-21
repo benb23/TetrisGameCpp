@@ -2,9 +2,9 @@
 #define _Go_To_XY
 #include "Config.h"
 
-void gotoxy(int x, int y);
-void clrscr();
-void setTextColor(Color);
+void gotoxy(int x, int y);		// Move the cursor to position according an input coordinate
+void clrscr();					// Clear the console screen
+void setTextColor(Color);		
 void hideCursor();
 
 #endif

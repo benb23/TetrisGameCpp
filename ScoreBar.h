@@ -6,7 +6,7 @@ class Score{
 	int scoreValue, distance, linesDeleted, partsNum, speedCounter;
 	int maxValueY[COLUMNS];
 public:
-	enum{VERY_SLOW=-2,SLOW,NORMAL,HIGH,VERY_HIGH};
+	enum{VERY_SLOW=-2,SLOW,NORMAL,HIGH,VERY_HIGH};		// Speed const
 
 	int getSpeed(){
 		return speedCounter;
@@ -101,7 +101,8 @@ public:
 	void updateScoreValue(int addition) { scoreValue += addition; };
 	int getScoreValue() { return scoreValue; }
 
-	bool isLarger(int currentX, int maxY) // checks and updates the max array
+	// The function checks and updates the max array
+	bool isLarger(int currentX, int maxY) 
 	{
 		if (maxY < maxValueY[currentX - 1]){
 			setMax(currentX, maxY);

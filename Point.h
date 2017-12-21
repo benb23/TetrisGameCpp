@@ -35,7 +35,6 @@ public:
 		this->x = x;
 	}
 	void draw(char ch);
-	void move();
 	void move(int direction);
 };
 

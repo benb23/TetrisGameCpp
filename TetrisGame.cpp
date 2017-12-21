@@ -123,7 +123,7 @@ void TetrisGame::printMenu(){
 	// END MENU BORDERS
 
 	// HEDLINE MENU
-	gotoxy(21,3);
+	gotoxy(23,3);
 	cout << "M E N U" << endl;
 	gotoxy(15, 4);
 	for (int k = 0; k < 23; k++)
@@ -138,7 +138,7 @@ void TetrisGame::printMenu(){
 	gotoxy(16, 12);
 	cout << "(4) SPEED DOWN";
 	gotoxy(16, 14);
-	cout << "(8) HELP" ;
+	cout << "(8) HELP - KEYS" ;
 	gotoxy(16, 16);
 	cout << "(9) EXIT";
 }
@@ -169,83 +169,84 @@ int TetrisGame::checkKeys(char ch){
 	return invalid_Key;
 }
 
-void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus){
+void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 	int maxY, minY, isBombed = 1, tempTime = 0, speed;
 	char keyEntered = '5';
-	unsigned long int validKey, currentTime, whichShape=currentShape.getShape(); // update 
+	unsigned long int validKey, currentTime, whichShape = currentShape.getShape(); // update 
 	int checkPosition, timeInterval = 800, howManyBombed = 0;
 
 	while (true)
 	{
 
 		currentTime = GetTickCount64() + timeInterval;
-		while (GetTickCount64() <= currentTime){
-			if (_kbhit()){
+		while (GetTickCount64() <= currentTime) {
+			if (_kbhit()) {
 				keyEntered = _getch();
 				validKey = checkKeys(keyEntered);
 				if (checkExit(keyEntered) || checkPause(keyEntered))
 					return;
-				if (validKey != invalid_Key){
+				if (validKey != invalid_Key) {
 					speed = scoreStatus.getSpeed();
 					if ((keyEntered == THREE && speed < Score::VERY_HIGH) || (keyEntered == FOUR && speed > Score::VERY_SLOW)) {
 						changeSpeed(keyEntered, tempTime, timeInterval, scoreStatus);
 						break;
 					}
 
-					if (board.checkPos(currentShape, validKey) == TetrisBoard::FREE_SPACE){ // returns true also if it's a joker
+					if (board.checkPos(currentShape, validKey) == TetrisBoard::FREE_SPACE) { // returns true also if it's a joker
 						if (keyEntered == SPACE_key) // space key has been pressed
 						{
 							currentShape.getMinMaxShape(minY, maxY);
-							scoreStatus.setDistance(currentShape,minY);
-							scoreStatus.updateScoreValue(2 * scoreStatus.getDistance()); // hard drop
+							scoreStatus.setDistance(currentShape, minY);
+							scoreStatus.updateScoreValue(2 * scoreStatus.getDistance()); // hard drop 
 							currentTime -= 800;
-				 			timeInterval = 0;
-						}
-						else if (currentShape.getShape() == Shape::JOKER && (keyEntered == s_key || keyEntered == S_key))
-						{
-							board.updateBoard(currentShape);
-							isBombed = 0;
-							break;
-						}
-						else if (validKey == Shape::DOWN){
-							scoreStatus.updateScoreValue(1); // increases score by 1
-							scoreStatus.printScore();
-							setTextColor(currentShape.whichColor());
-							flushall();
+							timeInterval = 0;
+							}
+							else if (currentShape.getShape() == Shape::JOKER && (keyEntered == s_key || keyEntered == S_key))
+							{
+								board.updateBoard(currentShape);
+								isBombed = 0;
+								break;
+							}
+							else if (validKey == Shape::DOWN) {
+								scoreStatus.updateScoreValue(1); // increases score by 1
+								scoreStatus.printScore();
+								setTextColor(currentShape.whichColor());
+								flushall();
+
+							}
+							currentShape.move(validKey, board);
 
 						}
-						currentShape.move(validKey, board);
+						else if (currentShape.getShape() == Shape::BOMB && (keyEntered == LEFT_KEY || keyEntered == RIGHT_KEY) && currentShape.shape[0].getX() > 1 && currentShape.shape[0].getX() < 10) { // the bomb has exploded						currentShape.checkBomb(validKey, board, howManyBombed);
+							if (currentShape.checkBomb(validKey, board, howManyBombed)) {
+								isBombed = 0;
+								break;
+							}
+						}
+
 
 					}
-					else if (currentShape.getShape() == Shape::BOMB && (keyEntered==LEFT_KEY || keyEntered == RIGHT_KEY) && currentShape.shape[0].getX() >  1 && currentShape.shape[0].getX() < 10){ // the bomb has exploded						currentShape.checkBomb(validKey, board, howManyBombed);
-						if (currentShape.checkBomb(validKey, board, howManyBombed)) {
-							isBombed = 0;
-							break;
-						}
-					}
-
-     
 				}
 			}
-		}
-		checkPosition = board.checkPos(currentShape, Shape::DOWN);
-		if ((checkPosition == TetrisBoard::FREE_SPACE || (currentShape.getShape() == Shape::BOMB && !(currentShape.checkBomb(Shape::DOWN, board, howManyBombed)) && currentShape.shape[0].getY()>18) ||
-			(currentShape.getShape() == Shape::JOKER && checkPosition == TetrisBoard::SHAPE_ENCOUNTER)) && isBombed)
-			currentShape.move(Shape::DOWN, board);
-		else{ // the last object stopped and a new one needs to be created
-			newRound(isBombed, tempTime, timeInterval, board, minY, maxY, scoreStatus, howManyBombed, whichShape);
-		}
+			checkPosition = board.checkPos(currentShape, Shape::DOWN);
+			if ((checkPosition == TetrisBoard::FREE_SPACE || (currentShape.getShape() == Shape::BOMB && !(currentShape.checkBomb(Shape::DOWN, board, howManyBombed)) && currentShape.shape[0].getY() > 18) ||
+				(currentShape.getShape() == Shape::JOKER && checkPosition == TetrisBoard::SHAPE_ENCOUNTER)) && isBombed)
+				currentShape.move(Shape::DOWN, board);
+			else { // the last object stopped and a new one needs to be created
+				newRound(isBombed, tempTime, timeInterval, board, minY, maxY, scoreStatus, howManyBombed, whichShape);
+			}
 
-		if (board.checkEndGame()){
-			printGameOver();
-			return;
+			if (board.checkEndGame()) {
+				printGameOver();
+				return;
+			}
+
+
 		}
+		gotoxy(2, 17);
+		keyEntered = _getch();
+		return;
 
-
-	}
-	gotoxy(2, 17);
-	keyEntered = _getch();
-	return;
 }
 
 void TetrisGame::newRound(int& isBombed,int& tempTime, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape) {

@@ -25,7 +25,7 @@ public:
 					cout << "%";
 					break;
 				case Shape::JOKER:
-					setTextColor(LIGHTRED);
+					setTextColor(YELLOW);
 					cout << "X";
 					break;
 				default:
