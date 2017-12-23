@@ -64,28 +64,27 @@ public:
 	}
 
 	bool checkPause(char keyEntered) {
-		if (keyEntered == '2') {
+		if (keyEntered == '8') { // 'help'
+			ShellExecute(0, 0, L"https://i.imgur.com/0u47UC2.jpg", 0, 0, SW_SHOW);
+			return true;
+		}
+		else if (keyEntered == '2') { //'pause'
 			Sleep(1000);
 			return true;
 		}
 		return false;
 	}
 
-	void newRound(int& isBombed, int& tempTime, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape);
+	void newRound(int& isBombed, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape);
 
-	void changeSpeed(char indicator, int& tempTime, int& timeInterval, Score& scoreStatus) {
+	void changeSpeed(char indicator, int& timeInterval, Score& scoreStatus) {
 
 		if (indicator == THREE) // increase speed
-		{
-			tempTime -= 300;
 			scoreStatus.increaseSpeed();
-		}
 		else // decrease speed
-		{
-			tempTime += 300;
 			scoreStatus.decreaseSpeed();
-		}
-		timeInterval = 800 + tempTime;
+		updateInterval(timeInterval, scoreStatus);
+
 		scoreStatus.printSpeed();
 	}
 
@@ -93,6 +92,20 @@ public:
 
 	void continueBlink();
 
+	void updateInterval(int& timeInterval, Score& scoreStatus) {
+		if (scoreStatus.getSpeed() >= 0)
+			timeInterval = 800 - 300 * scoreStatus.getSpeed();
+		else
+			timeInterval = 800 + 300 * scoreStatus.getSpeed();
+	}
+
+	void hardDrop(Score& scoreStatus, int& timeInterval,unsigned long int& currentTime,int& minY, int& maxY) {
+		currentShape.getMinMaxShape(minY, maxY);
+		scoreStatus.setDistance(currentShape, minY);
+		scoreStatus.updateScoreValue(2 * scoreStatus.getDistance()); // hard drop 
+		currentTime -= 800;
+		timeInterval = 0;
+	}
 };
 
 #endif

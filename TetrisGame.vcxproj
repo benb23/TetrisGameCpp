@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Point.cpp" />
+    <ClCompile Include="ScoreBar.cpp" />
     <ClCompile Include="Shape.cpp" />
     <ClCompile Include="TetrisBoard.cpp" />
     <ClCompile Include="GoToXY.cpp" />

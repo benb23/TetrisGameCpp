@@ -2,7 +2,7 @@
 #include "GoToXY.h"
 #include "TetrisBoard.h"
 
-//XXXXXXXX
+
 void Shape::createShape(int whichShape) {
 	int k=1;
 	switch (whichShape) {
@@ -54,7 +54,7 @@ void Shape::createShape(int whichShape) {
 	setPosition(DEG_0);
 }
 
-bool Shape::canTheShapeRotate(TetrisBoard& board) {
+bool Shape::canTheShapeRotate(const TetrisBoard& board) {
 	int x, y;
 	for (int i = 0; i < SIZE; i++) //checks if the current shape has reached the bottom of the screen or near another shape
 	{
@@ -64,7 +64,7 @@ bool Shape::canTheShapeRotate(TetrisBoard& board) {
 			|| (board.checkBoard(x + 1, y) && board.checkBoard(x - 1, y)) // close to shapes in both sides left+right
 			|| (board.checkBoard(x + 2, y) && board.checkBoard(x - 1, y))
 			|| (board.checkBoard(x + 1, y) && board.checkBoard(x - 2, y))
-			|| (x >= COLUMNS - 2 && board.checkBoard(x - 1, y)) // close to a wall froom the right + a shape in the left
+			|| (x >= COLUMNS - 2 && board.checkBoard(x - 1, y)) // close to a wall from the right + a shape in the left
 			|| (x <= 1 && board.checkBoard(x + 1, y))) // close to a wall in the left + a shape in the right
 			return false;
 	}
@@ -72,20 +72,19 @@ bool Shape::canTheShapeRotate(TetrisBoard& board) {
 }
 
 
-void Shape::move(int direction, TetrisBoard& board) {
+void Shape::move(int direction,const TetrisBoard& board) {
 	int position = getPoisition();
 	int x, y, check = 1;
 
 	for (int j = 0; j < SIZE; j++){
-		// if the shape is the Joker AND there is another shape there
-		
+
+		// if the shape is the Joker AND there is another shape there then print the joker in top of it 
 		if (getShape() == JOKER && board.getCoord(shape[0].getX(),shape[0].getY())){
  			setTextColor(whichColor(board.getCoord(shape[j].getX(), shape[j].getY())));
 			if (board.getCoord(shape[j].getX(), shape[j].getY()) == JOKER)
 				shape[j].draw('X');
-			 else
+			 else 	// print the previous shape 
 				shape[j].draw('%');
-
 
 		} else 
 			shape[j].draw(' ');
@@ -93,7 +92,7 @@ void Shape::move(int direction, TetrisBoard& board) {
 		
 	
 
-	if (direction != UP){
+	if (direction != UP){ // the shape won't rotate
 		for (int j = 0; j < SIZE; j++)
 			shape[j].move(direction);
 	}
@@ -161,16 +160,15 @@ void Shape::move(int direction, TetrisBoard& board) {
 
 void Shape::rotate(int position) {
 
-	int x, y, k;
+	int x, y, k = -1 ;
 	switch (position) {
 
 	case DEG_0:
-
+		// the switch case is future proof
 		switch (getShape())
 		{
 
 		case LINE:
-			k = -1;
 			for (int i = 0; i < SIZE;i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
@@ -188,7 +186,6 @@ void Shape::rotate(int position) {
 		{
 
 		case LINE:
-			k = -1;
 			for (int i = 0; i < SIZE; i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
@@ -205,7 +202,6 @@ void Shape::rotate(int position) {
 		switch (getShape())
 		{
 		case LINE:
-			k = -1;
 			for (int i = 0; i < SIZE;i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
@@ -222,7 +218,6 @@ void Shape::rotate(int position) {
 		switch (getShape())
 		{
 		case LINE:
-			k = -1;
 			for (int i = 0; i < SIZE;i++) {
 				x = shape[i].getX();
 				y = shape[i].getY();
@@ -243,11 +238,12 @@ bool Shape::checkBomb(int direction, TetrisBoard& board, int& howManyBombed){
 
 	shape[0].draw(getTexture());
 
+	// checks if the bomb can explode in the direction entered
 	if ((direction == LEFT && board.checkBoard(x - 1, y) == true) ||
 		(direction == RIGHT && board.checkBoard(x + 1, y) == true) ||
 		(board.checkBoard(x, y + 1) == true) || y>=Board_Gap+ROWS-1)
 	{
-		howManyBombed = activateBomb(x, y, board);
+		howManyBombed = activateBomb(x, y, board); // update the pieces that have been blown
 		return true;
 	}
 
@@ -264,15 +260,16 @@ int Shape::activateBomb(int x, int y, TetrisBoard& board){
 
 		tempX = x - 1;
 		for (int j = 0; j < 3; j++){
-
+			// if it's within the board limits and a shape has been met, update the counter (howManyBombed)
 			if (tempX > 0 && tempX <= COLUMNS && tempY > Board_Gap && tempY < ROWS+Board_Gap){
 				if (board.getCoord(tempX, tempY))
 					howManyBombed++;
+
+				// explosion effect
 				if (j%2==0)
 					setTextColor(YELLOW);
 				else
 					setTextColor(RED);
-
 				gotoxy(tempX, tempY);
 				cout << "*";
 				Sleep(50);
@@ -289,4 +286,31 @@ int Shape::activateBomb(int x, int y, TetrisBoard& board){
 	return howManyBombed;
 }
 
+void Shape::getMinMaxShape(int& minY, int& maxY) {
+	minY = maxY = shape[0].getY();
+	for (int i = 1; i < SIZE; i++) {
+		if (shape[i].getY() > minY)
+			minY = shape[i].getY();
+		if (shape[i].getY()< maxY)
+			maxY = shape[i].getY();
+	}
+}
 
+Color Shape::whichColor(int theShapeNum = 0) {
+	
+		if (theShapeNum == 0)
+			theShapeNum = currentShape;
+		switch (theShapeNum) {
+		case CUBE:
+			return LIGHTMAGENTA;
+		case LINE:
+			return LIGHTCYAN;
+		case JOKER:
+			return YELLOW;
+		case BOMB:
+			return LIGHTRED;
+		default:
+			return DARKGREY;
+		}
+
+}

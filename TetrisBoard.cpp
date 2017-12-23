@@ -1,7 +1,7 @@
 #include "TetrisBoard.h"
 #include "GoToXY.h"
 
-int TetrisBoard::checkPos(Shape current, int direction){
+int TetrisBoard::checkPos(const Shape& current, int direction){
 	int x, y;
 	switch (direction){
 	case Shape::LEFT:
@@ -50,7 +50,7 @@ bool TetrisBoard::checkLine(int currentY){
 
 }
 
-int TetrisBoard::deleteLines(Shape current, int minY, int maxY){
+int TetrisBoard::deleteLines(const Shape& current, int minY, int maxY){
 
 
 	int currentY = minY, howManyDel = 0, temp;
@@ -81,11 +81,60 @@ int TetrisBoard::deleteLines(Shape current, int minY, int maxY){
 		}
 		else // check lines above the relatively lowest line
 			currentY--;
-
-
-
 	}
 
 	return howManyDel;
 
+}
+
+void TetrisBoard::setBoard() {
+	for (int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			Board[i][j] = 0;
+		}
+	}
+}
+
+bool TetrisBoard::checkEndGame() {
+	for (int i = 0; i < 15; i++) {
+		if (Board[0][i] != 0)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+void TetrisBoard::updateBoard(Shape current) {
+	int x, y;
+	for (int i = 0; i < current.SIZE; i++) {
+		x = current.shape[i].getX();
+		y = current.shape[i].getY();
+		Board[y - Board_Gap][x - 1] = current.getShape();
+	}
+}
+
+void TetrisBoard::printBoard(int currentY) {
+	for (int y = currentY; y > Board_Gap; y--) {
+		for (int x = 1; x <= COLUMNS; x++) {
+			gotoxy(x, y);
+			switch (getCoord(x, y)) {
+
+			case Shape::LINE:
+				setTextColor(LIGHTCYAN);
+				cout << "%";
+				break;
+			case Shape::CUBE:
+				setTextColor(LIGHTMAGENTA);
+				cout << "%";
+				break;
+			case Shape::JOKER:
+				setTextColor(YELLOW);
+				cout << "X";
+				break;
+			default:
+				cout << " ";
+				break;
+
+			}
+		}
+	}
 }

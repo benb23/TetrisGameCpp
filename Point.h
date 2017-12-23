@@ -10,7 +10,7 @@ private:
 	int x;
 	int y;
 public:
-	Point(){
+	Point(){ // sets values to the middle of the screen
 		this->x = 7;
 		this->y = 0;
 	}
