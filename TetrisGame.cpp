@@ -12,10 +12,11 @@ int TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreSt
 	switch (keyPressed) {
 	
 	case '1':
-		setGameStarted();
-		return runGame(board, scoreStatus);
+		if (!gameStarted) {
+			setGameStarted();
+			return runGame(board, scoreStatus);
+		}
 		break;
-
 	case '2':
 		if (gameStarted) {
 			setGameStarted(); //prints the normal continue color
