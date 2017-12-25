@@ -8,19 +8,19 @@
 
 #define invalid_Key -1
 
-void TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreStatus) {
+int TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreStatus) {
 
 	switch (keyPressed) {
 	
 	case '1':
 		setGameStarted();
-		runGame(board, scoreStatus);
+		return runGame(board, scoreStatus);
 		break;
 
 	case '2':
 		if (gameStarted) {
 			setGameStarted(); //prints the normal continue color
-			runGame(board, scoreStatus);
+			return runGame(board, scoreStatus);
 		}
 		break;
 	case '8':
@@ -28,7 +28,7 @@ void TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreS
 		break;
 	case '9':
 		printGameOver();
-		return;
+		return END_GAME;
 	}
 }
 
@@ -86,7 +86,8 @@ void TetrisGame::initGame(){
 		while (_kbhit())
 		{
 			keyPressed = _getch();
-			MenuControl(keyPressed, board, scoreStatus);
+			if (MenuControl(keyPressed, board, scoreStatus) == END_GAME)
+				return;
 		}
 	}
 
@@ -168,7 +169,7 @@ int TetrisGame::checkKeys(char ch){
 	return invalid_Key;
 }
 
-void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
+int TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 	int maxY, minY, isBombed = 1 , speed;
 	char keyEntered;
 	unsigned long int validKey, currentTime, whichShape = currentShape.getShape(); // update 
@@ -184,8 +185,8 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 				keyEntered = _getch();
 				validKey = checkKeys(keyEntered); // checks if the pressed key is valid
 				
-				if (checkExit(keyEntered) || checkPause(keyEntered))
-					return;
+				if (checkExit(keyEntered)) return END_GAME;
+				if (checkPause(keyEntered)) return PAUSED;
 
 				if (validKey != invalid_Key) {
 					speed = scoreStatus.getSpeed();
@@ -250,15 +251,11 @@ void TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 
 		 if (board.checkEndGame()) {
 				printGameOver();
-				return;
+				return END_GAME;
 			}
 
 
 	}
-	gotoxy(2, 17);
-	keyEntered = _getch();
-	return;
-
 }
 
 void TetrisGame::newRound(int& isBombed, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape) {

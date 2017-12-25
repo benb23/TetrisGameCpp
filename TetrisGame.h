@@ -10,14 +10,14 @@ using namespace std;
 
 class TetrisGame
 {
-	enum {ESC=27,SPACE_key=32, s_key=115, S_key=83, ONE=49, TWO=50, THREE=51, FOUR=52, DOWN_KEY = 80, LEFT_KEY=75, UP_KEY=72, RIGHT_KEY=77, PAUSED, PLAYING};
+	enum {ESC=27,SPACE_key=32, s_key=115, S_key=83, ONE=49, TWO=50, THREE=51, FOUR=52, DOWN_KEY = 80, LEFT_KEY=75, UP_KEY=72, RIGHT_KEY=77, PAUSED, PLAYING, END_GAME};
 	Shape currentShape;
 	char keyboards[11];
 	int Board[COLUMN][ROW], gameStarted = 0;
 public:
 	void setGameStarted();
 	void displayBorder();
-	void runGame(TetrisBoard& board, Score& scoreStatus);
+	int runGame(TetrisBoard& board, Score& scoreStatus);
 	void initGame();
 	int checkKeys(char ch);
 	void setKeys(){
@@ -53,7 +53,7 @@ public:
 		cout << "   | | |_ |/ _` | '_ ` _ \\ / _ \\ | |  | \\ \\ / / _ \\ '__|" << endl;
 		cout << "   | |__| | (_| | | | | | |  __/ | |__| |\\ V /  __/ |   " << endl;
 		cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
-		Sleep(5000);
+		Sleep(3000);
 	}
 	bool checkExit(char keyEntered) {
 		if (keyEntered == '9') {
@@ -88,15 +88,12 @@ public:
 		scoreStatus.printSpeed();
 	}
 
-	void MenuControl(char keyPressed, TetrisBoard& board, Score& scoreStatus);
+	int MenuControl(char keyPressed, TetrisBoard& board, Score& scoreStatus);
 
 	void continueBlink();
 
 	void updateInterval(int& timeInterval, Score& scoreStatus) {
-		if (scoreStatus.getSpeed() >= 0)
-			timeInterval = 800 - 300 * scoreStatus.getSpeed();
-		else
-			timeInterval = 800 + 300 * scoreStatus.getSpeed();
+		timeInterval = 800 - 300 * scoreStatus.getSpeed();
 	}
 
 	void hardDrop(Score& scoreStatus, int& timeInterval,unsigned long int& currentTime,int& minY, int& maxY) {
