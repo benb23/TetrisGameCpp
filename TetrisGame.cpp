@@ -30,6 +30,7 @@ int TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreSt
 		printGameOver();
 		return END_GAME;
 	}
+	flushall();
 }
 
 void TetrisGame::continueBlink() {
@@ -177,10 +178,12 @@ int TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 	while (true)
 	{
 
-		 checkPosition = board.checkPos(currentShape, Shape::DOWN);
+		 
 
 		 gameStatus = dropInterval(board, scoreStatus, timeInterval, isBombed, minY, maxY, howManyBombed);
 		 if (gameStatus)  return gameStatus; // the game will continue unless the pause or exit button has been pressed
+
+		 checkPosition = board.checkPos(currentShape, Shape::DOWN);
 		
 		 //additional tests for the shapes, if it can move/detonate (the bomb).
 		 if ((checkPosition == TetrisBoard::FREE_SPACE 
