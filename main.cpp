@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 void main(){
-	srand(time(0));
+	srand((unsigned int)time(0));
 	TetrisGame().initGame();
 	system("cls");
 }

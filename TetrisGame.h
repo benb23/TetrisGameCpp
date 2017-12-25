@@ -10,7 +10,7 @@ using namespace std;
 
 class TetrisGame
 {
-	enum {ESC=27,SPACE_key=32, s_key=115, S_key=83, ONE=49, TWO=50, THREE=51, FOUR=52, DOWN_KEY = 80, LEFT_KEY=75, UP_KEY=72, RIGHT_KEY=77, PAUSED, PLAYING, END_GAME};
+	enum { invalid_Key = -1, ESC=27,SPACE_key=32, s_key=115, S_key=83, ONE=49, TWO=50, THREE=51, FOUR=52, DOWN_KEY = 80, LEFT_KEY=75, UP_KEY=72, RIGHT_KEY=77, PAUSED, PLAYING, END_GAME, CONTINUE_GAME = 0};
 	Shape currentShape;
 	char keyboards[11];
 	int Board[COLUMN][ROW], gameStarted = 0;
@@ -42,6 +42,9 @@ public:
 			res = rand() % 2 + 12;
 		return res;
 	}
+
+	int dropInterval(TetrisBoard& board, Score& scoreStatus, int& timeInterval, int& isBombed, int&minY, int& maxY, int& howManyBombed);
+
 
 	void printMenu();
 	void printGameOver() {
@@ -75,7 +78,7 @@ public:
 		return false;
 	}
 
-	void newRound(int& isBombed, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, unsigned long int& whichShape);
+	void newRound(int& isBombed, int& timeInterval, TetrisBoard& board, int& minY, int& maxY, Score& scoreStatus, int& howManyBombed, int& whichShape);
 
 	void changeSpeed(char indicator, int& timeInterval, Score& scoreStatus) {
 
