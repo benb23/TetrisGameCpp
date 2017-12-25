@@ -296,7 +296,7 @@ void Shape::getMinMaxShape(int& minY, int& maxY) {
 	}
 }
 
-Color Shape::whichColor(int theShapeNum = 0) {
+Color Shape::whichColor(int theShapeNum) {
 	
 		if (theShapeNum == 0)
 			theShapeNum = currentShape;
