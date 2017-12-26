@@ -11,28 +11,30 @@ int TetrisGame:: MenuControl(char keyPressed, TetrisBoard& board, Score& scoreSt
 
 	switch (keyPressed) {
 	
-	case '1':
+	case '1':	// start new game button
 		if (!gameStarted) {
 			setGameStarted();
 			return runGame(board, scoreStatus);
 		}
 		break;
-	case '2':
+	case '2':	// pause / continue button
 		if (gameStarted) {
 			setGameStarted(); //prints the normal continue color
 			return runGame(board, scoreStatus);
 		}
 		break;
-	case '8':
+	case '8': // help button - directing to and url that contain an image 
 		ShellExecute(0, 0, L"https://i.imgur.com/0u47UC2.jpg", 0, 0, SW_SHOW);
 		break;
-	case '9':
+	case '9': // EXIT button 
 		printGameOver();
 		return END_GAME;
 	}
 	flushall();
 }
 
+// The function turning on a blinking effect to the pause/continue 
+// button while the game is paused
 void TetrisGame::continueBlink() {
 	setTextColor(DARKGREY);
 	gotoxy(16, 8);
@@ -49,6 +51,7 @@ void TetrisGame::continueBlink() {
 	Sleep(200);
 }
 
+// The function coloring the start game button in grey after clicking 
 void TetrisGame::setGameStarted() {
 
 	setTextColor(DARKGREY);
@@ -144,6 +147,7 @@ void TetrisGame::printMenu(){
 	cout << "(9) EXIT";
 }
 
+// The function prints the game borders
 void TetrisGame::displayBorder(){
 	
 	gotoxy(0, 3);
@@ -177,9 +181,6 @@ int TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 
 	while (true)
 	{
-
-		 
-
 		 gameStatus = dropInterval(board, scoreStatus, timeInterval, isBombed, minY, maxY, howManyBombed);
 		 if (gameStatus)  return gameStatus; // the game will continue unless the pause or exit button has been pressed
 
@@ -200,8 +201,6 @@ int TetrisGame::runGame(TetrisBoard& board, Score& scoreStatus) {
 				printGameOver();
 				return END_GAME;
 			}
-
-
 	}
 }
 
