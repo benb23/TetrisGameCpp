@@ -2,18 +2,15 @@
 #define _Tetris_Game
 #include "ScoreBar.h"
 #include <iostream>
+
 using namespace std;
-
-#define ROW 15
-#define COLUMN 10
-
 
 class TetrisGame
 {
 	enum { invalid_Key = -1, ESC=27,SPACE_key=32, s_key=115, S_key=83, ONE=49, TWO=50, THREE=51, FOUR=52, DOWN_KEY = 80, LEFT_KEY=75, UP_KEY=72, RIGHT_KEY=77, PAUSED, PLAYING, END_GAME, CONTINUE_GAME = 0};
 	Shape currentShape;
 	char keyboards[11];
-	int Board[COLUMN][ROW], gameStarted = 0;
+	int Board[COLUMNS][ROWS], gameStarted = 0;
 public:
 	void setGameStarted();
 	void displayBorder();
@@ -34,6 +31,9 @@ public:
 		keyboards[10] = FOUR;
 
 	}
+	
+	// The function is randomaize shapes
+	// The probability to joker/bomb - 30% , cube/line - 70%
 	int randomNum(){
 		int res = rand() % 100;
 		if (res < 70)
@@ -45,8 +45,8 @@ public:
 
 	int dropInterval(TetrisBoard& board, Score& scoreStatus, int& timeInterval, int& isBombed, int&minY, int& maxY, int& howManyBombed);
 
-
 	void printMenu();
+
 	void printGameOver() {
 		setTextColor(LIGHTCYAN);
 		gotoxy(0, 20);
@@ -58,6 +58,7 @@ public:
 		cout << "    \\_____|\\__,_|_| |_| |_|\\___|  \\____/  \\_/ \\___|_|   " << endl;
 		Sleep(3000);
 	}
+
 	bool checkExit(char keyEntered) {
 		if (keyEntered == '9') {
 			printGameOver();

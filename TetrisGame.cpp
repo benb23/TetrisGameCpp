@@ -68,6 +68,7 @@ void TetrisGame::setGameStarted() {
 	gameStarted = 1;
 }
 
+// The function is initializing the game  
 void TetrisGame::initGame(){
 
 	TetrisBoard board;
